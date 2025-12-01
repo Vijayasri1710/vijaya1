@@ -10,6 +10,9 @@ docker start my-redis
 docker rm my-redis
 docker rmi redis
 -------------------
+---------------------
+docker file:
+
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 COPY target/myapp.jar app.jar
