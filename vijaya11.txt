@@ -1,3 +1,4 @@
+#DOCKER -CLI COMMANDS
 docker pull redis
 docker run --name my-redis -d redis
 docker ps
