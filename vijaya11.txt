@@ -12,6 +12,84 @@ docker rmi redis
 -------------------
 ---------------------
 docker file:
+# Go to project folder
+cd /c/DockerProjects/Redis
+
+# Build image from Dockerfile
+docker build -t redisnew .
+
+# Run container from custom image
+docker run --name myredisnew -d redisnew
+
+# Enter container (Redis CLI)
+docker exec -it myredisnew redis-cli
+
+# Check all containers
+docker ps -a
+
+# Login to Docker Hub
+docker login
+
+# Commit container to new image
+docker commit <container-id> <username>/redis1
+
+# Push image to Docker Hub
+docker push <username>/redis1
+
+# Remove container
+docker rm <container-id>
+
+# Remove local image
+docker rmi <username>/redis1
+
+# Pull back from Docker Hub (to verify)
+docker pull <username>/redis1
+
+# Run pulled image
+docker run --name myredis -d <username>/redis1
+------------------------------------------------------------------------------------------
+# Start all services
+docker-compose up               # start containers
+
+# Start in background
+docker-compose up -d            # run in detached mode
+
+# Rebuild and start
+docker-compose up -d --build    # rebuild images + start
+
+# Stop running services
+docker-compose stop             # stop all containers
+
+# Stop + remove containers, network
+docker-compose down             # clean up
+
+# Remove everything including images + volumes
+docker-compose down --rmi all --volumes   # full cleanup
+
+# See running services
+docker-compose ps               # list services
+
+# View logs of all services
+docker-compose logs -f          # follow logs
+
+# View logs of one service
+docker-compose logs -f app      # logs for service "app"
+
+# Execute command inside a running service
+docker-compose exec app bash    # enter app container
+
+# Execute redis-cli in redis container
+docker-compose exec redis redis-cli   # open redis CLI
+
+# Pull images from registry (if using 'image:' field)
+docker-compose pull             # download images
+
+# Validate compose file
+docker-compose config           # show final config
+
+# Scale a service
+docker-compose up -d --scale app=3   # run 3 containers of app
+--------------------------------------------------------------------------------------------------------------------------------
 
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
@@ -29,4 +107,29 @@ docker login
 docker tag mymavenapp <your_dockerhub_username>/mymavenapp
 docker push <your_dockerhub_username>/mymavenapp
 docker run -p 8080:8080 --name appcontainer -d mymavenapp
---------------------
+-----------------------------------------------------------------------------
+redis docker file:
+FROM redis:latest
+CMD ["redis-server"]
+----------------
+redis docker-compose.yml
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    volumes:
+      - ./:/app
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+-------------------------------------------------------------------------------------------
